@@ -1,2 +1,2 @@
 # Ignorer le fichier .env contenant les informations sensibles
-.env
+db.env
