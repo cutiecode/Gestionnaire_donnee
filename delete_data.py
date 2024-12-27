@@ -1,14 +1,9 @@
-from db_connection import connect_to_db
+import os
+from config import Config
 
 def delete_data(table_name, record_id, column_name):
-    """
-    Vide une colonne spécifique pour un ID donné dans une table.
-    :param table_name: Nom de la table.
-    :param record_id: ID de l'entrée.
-    :param column_name: Nom de la colonne à vider.
-    """
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                 # Obtenir les colonnes de la table

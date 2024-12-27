@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
 
-def connect_to_db():
+def Config():
     try:
         # Utiliser les variables d'environnement pour se connecter à la base de données
         connection = pymysql.connect(

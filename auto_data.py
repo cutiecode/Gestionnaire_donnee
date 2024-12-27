@@ -1,10 +1,11 @@
-from db_connection import connect_to_db
+import os
 from tabulate import tabulate
+from config import Config
 
-# Étape 1 : Identifier les données nécessaires
+# Identifier les données nécessaires
 def auto_data(table_name, data_ids=None):
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                 # Vérification que la table existe avant d'exécuter la requête

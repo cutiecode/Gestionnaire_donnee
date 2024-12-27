@@ -1,29 +1,20 @@
-from db_connection import connect_to_db
+import os
 import time
+from config import Config
 
 def insert_data(table_name, values):
-    """
-    Insère des données dans une table spécifique sans demander l'ID et le registered_at.
-
-    L'ID est incrémenté automatiquement par la base de données et `registered_at` est ajouté avec un timestamp
-    seulement si la colonne existe dans la table.
-    
-    :param table_name: Nom de la table.
-    :param values: Dictionnaire des colonnes et des valeurs à insérer (sans `id` ni `registered_at`).
-    """
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                 # Vérifier les colonnes de la table
                 cursor.execute(f"DESCRIBE {table_name}")
-                columns = [row[0] for row in cursor.fetchall()]  # Obtenir toutes les colonnes de la table
+                columns = [row[0] for row in cursor.fetchall()]  
 
-                # Ajouter `registered_at` pour `users` et `created_at` pour `tests`
                 if table_name == "users" and "registered_at" in columns:
-                    values["registered_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  # Timestamp actuel pour `registered_at`
+                    values["registered_at"] = time.strftime('%Y-%m-%d %H:%M:%S') 
                 elif table_name == "tests" and "created_at" in columns:
-                    values["created_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  # Timestamp actuel pour `created_at`
+                    values["created_at"] = time.strftime('%Y-%m-%d %H:%M:%S') 
 
                 # Création dynamique de la requête SQL
                 columns_list = ", ".join(values.keys())
@@ -36,5 +27,5 @@ def insert_data(table_name, values):
         print(f"Erreur lors de l'insertion des données dans `{table_name}` : {e}")
     finally:
         if connection:
-            connection.close()
+           connection.close()
 

@@ -1,20 +1,15 @@
-from db_connection import connect_to_db
+import os
 import time
+from config import Config
 
 def update_data(table_name, record_id, values):
-    """
-    Met à jour une entrée spécifique dans une table.
-    :param table_name: Nom de la table.
-    :param record_id: ID de l'entrée à mettre à jour.
-    :param values: Dictionnaire des colonnes et des valeurs à mettre à jour.
-    """
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                  # Vérifier les colonnes de la table
                 cursor.execute(f"DESCRIBE {table_name}")
-                columns = [row[0] for row in cursor.fetchall()]  # Obtenir toutes les colonnes de la table
+                columns = [row[0] for row in cursor.fetchall()]  
             
                 # Vérifier si l'ID existe
                 cursor.execute(f"SELECT 1 FROM {table_name} WHERE id = %s", (record_id,))
@@ -22,13 +17,13 @@ def update_data(table_name, record_id, values):
                     print(f"L'ID {record_id} n'existe pas dans la table `{table_name}`.")
                     return False  # Retourner False si l'ID n'existe pas
 
-                # Ajouter `registered_at` pour `users`, `created_at` pour `tests` et completed_at pour 'results'
+                
                 if table_name == "users" and "registered_at" in columns:
-                    values["registered_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  # Timestamp actuel pour `registered_at`
+                    values["registered_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  
                 elif table_name == "tests" and "created_at" in columns:
-                    values["created_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  # Timestamp actuel pour `created_at`
+                    values["created_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  
                 elif table_name == "results" and "completed_at" in columns:
-                    values["completed_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  # Timestamp actuel pour `created_at`
+                    values["completed_at"] = time.strftime('%Y-%m-%d %H:%M:%S')  
                 
                # Création dynamique de la requête SQL
                 set_clause = ", ".join([f"{col} = %s" for col in values.keys()])

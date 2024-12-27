@@ -2,7 +2,7 @@ from insert_data import insert_data
 from update_data import update_data
 from delete_data import delete_data
 from data_export import data_export
-from db_connection import connect_to_db
+from config import Config
 from tabulate import tabulate
 from auto_data import auto_data
 
@@ -14,7 +14,7 @@ def show_data(table_name):
     :param table_name: Nom de la table.
     """
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                 # Récupérer toutes les données de la table
@@ -42,13 +42,13 @@ def show_data(table_name):
 # Fonction pour valider l'existence d'un ID
 def validate_record_id(table_name, record_id):
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                 cursor.execute(f"SELECT 1 FROM {table_name} WHERE id = %s", (record_id,))
                 if cursor.fetchone() is None:
-                    return False  # ID n'existe pas
-                return True  # ID existe
+                    return False  
+                return True  
     except Exception as e:
         print(f"Erreur de validation de l'ID : {e}")
         return False
@@ -64,7 +64,7 @@ def select_table(exclude_results=False):
         print("1. users")
         print("2. tests")
         if not exclude_results:
-            print("3. results")  # Afficher `results` uniquement si ce n'est pas exclu
+            print("3. results") 
         
         choice = input("Sélectionnez une table (1 ou 2, ou 3 si disponible) : ").strip()
         
@@ -81,7 +81,7 @@ def select_table(exclude_results=False):
 # Fonction pour collecter les colonnes
 def collect_column_values(table_name):
     try:
-        connection = connect_to_db()
+        connection = Config()
         if connection:
             with connection.cursor() as cursor:
                 cursor.execute(f"DESCRIBE {table_name}")
@@ -164,7 +164,7 @@ def main_menu():
                         break
 
                     # Vérifier si l'ID existe dans la table
-                    connection = connect_to_db()
+                    connection = Config()
                     with connection.cursor() as cursor:
                         cursor.execute(f"SELECT 1 FROM {table_name} WHERE id = %s", (record_id,))
                         if cursor.fetchone() is None:
@@ -224,7 +224,7 @@ def main_menu():
                 continue
 
             print("\nIdentification des données...")
-            columns, data = auto_data(table_name=table_name, data_ids=data_ids)  # Appel à la fonction auto_data
+            columns, data = auto_data(table_name=table_name, data_ids=data_ids)  
 
             if data:
                 print(f"\nDonnées identifiées avec succès dans la table `{table_name}`. Voici les données :")
@@ -263,4 +263,5 @@ def input_with_validation(prompt, data_type):
             print(f"Veuillez entrer une valeur valide pour le type {data_type.__name__}.")
 
 if __name__ == "__main__":
-    main_menu()
+    main_menu() 
+
